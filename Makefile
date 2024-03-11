@@ -45,7 +45,7 @@ init: curl_check poetry_check
 	# make some default directories and files
 	mkdir data
 	mkdir src
-	echo -e 'if __name__ == "__main__":\n    pass' > src/main.py
+	@bash -c "echo -e 'if __name__ == \"__main__\":\n    pass' > src/main.py"
 	touch README.md
 	touch .env
 	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
@@ -77,7 +77,7 @@ lock: poetry_check
 format: poetry_check
 	@if [ -z $(RUFF) ]; then $(POETRY) run pip install --upgrade ruff; fi
 	@if [ -z $(ISORT) ]; then $(POETRY) run pip install --upgrade ISORT; fi
-	$(POETRY) run ruff .
+	$(POETRY) run ruff check .
 	$(POETRY) run ruff format .
 	$(POETRY) run isort .
 
