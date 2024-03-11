@@ -47,6 +47,7 @@ init: curl_check poetry_check
 	mkdir src
 	echo -e 'if __name__ == "__main__":\n    pass' > src/main.py
 	touch README.md
+	touch .env
 	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
 	# perform a git init
 	git init -b main
@@ -54,6 +55,7 @@ init: curl_check poetry_check
 	# we need to manual update
 	$(POETRY) remove --dev pytest
 	$(POETRY) add --dev pytest
+	$(POETRY) add python-dotenv
 	# run the install
 	$(MAKE) install
 	# test precommit
