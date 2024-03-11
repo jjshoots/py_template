@@ -43,6 +43,7 @@ init: curl_check poetry_check
 	rmdir temp
 	rm README.rst
 	# make some default directories and files
+	mkdir data
 	mkdir src
 	echo -e 'if __name__ == "__main__":\n    pass' > src/main.py
 	touch README.md
