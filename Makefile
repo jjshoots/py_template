@@ -44,6 +44,7 @@ init: curl_check poetry_check
 	rm README.rst
 	# make some default directories and files
 	mkdir src
+	echo -e 'if __name__ == "__main__":\n    pass' > src/main.py
 	touch README.md
 	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
 	# perform a git init
