@@ -77,9 +77,15 @@ lock: poetry_check
 format: poetry_check
 	@if [ -z $(RUFF) ]; then $(POETRY) run pip install --upgrade ruff; fi
 	@if [ -z $(ISORT) ]; then $(POETRY) run pip install --upgrade ISORT; fi
-	$(POETRY) run ruff check .
-	$(POETRY) run ruff format .
-	$(POETRY) run isort .
+	@echo ""
+	@echo "Checking code for linting errors..."
+	-$(POETRY) run ruff check .
+	@echo ""
+	@echo "Formatting code..."
+	-$(POETRY) run ruff format .
+	@echo ""
+	@echo "Sorting dependencies..."
+	-$(POETRY) run isort .
 
 # tests
 .PHONY: test
