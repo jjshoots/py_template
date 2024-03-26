@@ -46,8 +46,11 @@ init: curl_check poetry_check
 	mkdir data
 	mkdir src
 	@bash -c "echo -e 'if __name__ == \"__main__\":\n    pass' > src/main.py"
-	touch README.md
 	touch .env
+	# template readme
+	rm README.md
+	echo "# TODO" > README.md
+	# gitignore
 	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
 	# perform a git init
 	git init -b main
