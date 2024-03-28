@@ -41,14 +41,14 @@ init: curl_check poetry_check
 	mv $(DIRNAME) temp
 	mv temp/* ./
 	rmdir temp
-	rm README.rst
+	rm -f README.rst
 	# make some default directories and files
 	mkdir data
 	mkdir src
 	@bash -c "echo -e 'if __name__ == \"__main__\":\n    pass' > src/main.py"
 	touch .env
 	# template readme
-	rm README.md
+	rm -f README.md
 	echo "# TODO" > README.md
 	# gitignore
 	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
