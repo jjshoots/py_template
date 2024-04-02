@@ -18,9 +18,10 @@ poetry config virtualenvs.in-project true
 
 ## Creating new projects
 
-1. Make a new folder where you want the project to reside.
-2. Create a file called `Makefile` and copy everything from `Makefile` into it.
-3. Run `make init`.
+1. Click `use this template`. Or optionall do the following:
+    a) Make a new folder where you want the project to reside.
+    b) Create a file called `Makefile` and copy everything from `Makefile` into it.
+4. Run `make init`.
 
 ## Sourcing the virtual environment
 
