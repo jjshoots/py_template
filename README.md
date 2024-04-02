@@ -18,7 +18,7 @@ poetry config virtualenvs.in-project true
 
 ## Creating new projects
 
-1. Click `use this template`. Or optionall do the following:
+1. Click `use this template` and clone the resulting repository. Or optionall do the following:
     a) Make a new folder where you want the project to reside.
     b) Create a file called `Makefile` and copy everything from `Makefile` into it.
 4. Run `make init`.
@@ -52,7 +52,7 @@ poetry run pip3 install {your dependency here}
 or
 ```
 source ./.venv/bin/activate.fish
-pip3 isntall {your dependency here}
+pip3 install {your dependency here}
 ```
 
 ## Make commands for convenience
