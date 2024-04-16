@@ -57,6 +57,10 @@ pip3 install {your dependency here}
 
 ## Make commands for convenience
 
+- For initializing a brand new project:
+    ```
+    make init
+    ```
 - For generating lock and `requirements.txt` files:
     ```
     make lock
