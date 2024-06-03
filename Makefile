@@ -54,7 +54,7 @@ init: curl_check poetry_check
 	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
 	# perform a git init
 	git init -b main
-	# becase poetry pins pytest version to obsolesence...
+	# because poetry pins pytest version to obsolescence...
 	# we need to manual update
 	$(POETRY) remove --dev pytest
 	$(POETRY) add --dev pytest
