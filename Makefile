@@ -55,8 +55,7 @@ init: curl_check poetry_check
 	git init -b main
 	# because poetry pins pytest version to obsolescence...
 	# we need to manual update
-	$(POETRY) remove --dev pytest
-	$(POETRY) add --dev pytest
+	$(POETRY) add --group dev pytest
 	$(POETRY) add python-dotenv
 	# run the install
 	$(MAKE) install
