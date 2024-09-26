@@ -45,7 +45,6 @@ init: curl_check poetry_check
 	# make some default directories and files
 	mkdir src
 	@bash -c "echo -e 'if __name__ == \"__main__\":\n    pass' > src/main.py"
-	touch .env
 	# template readme
 	rm -f README.md
 	echo "# TODO" > README.md
@@ -56,7 +55,6 @@ init: curl_check poetry_check
 	# because poetry pins pytest version to obsolescence...
 	# we need to manual update
 	$(POETRY) add --group dev pytest
-	$(POETRY) add python-dotenv
 	# run the install
 	$(MAKE) install
 	# test precommit
