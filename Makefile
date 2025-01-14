@@ -45,6 +45,7 @@ init: curl_check poetry_check
 	# make some default directories and files
 	mkdir src
 	@bash -c "echo -e 'if __name__ == \"__main__\":\n    pass' > src/main.py"
+	touch .env
 	# template readme
 	rm -f README.md
 	echo "# TODO" > README.md
