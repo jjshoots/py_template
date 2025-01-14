@@ -1,97 +1,71 @@
-# parameters
+# Parameters
 CURL := $(shell command -v curl 2> /dev/null)
 POETRY := $(shell command -v poetry 2> /dev/null)
-RUFF := $(shell command -v ruff 2> /dev/null)
-ISORT := $(shell command -v isort 2> /dev/null)
+PRECOMMIT := $(shell command -v pre-commit 2> /dev/null)
 MKFILEPATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 DIRNAME := $(notdir $(CURDIR))
 
-# default command when `make` is called
+# Default command when `make` is called
 .DEFAULT_GOAL := help
 
-# the main help
+# The main help
 .PHONY: help
 help:
 	@echo "Please use 'make <target>', where <target> is one of"
 	@echo ""
-	@echo "  init        uses poetry to initialize a new project"
-	@echo "  install     install packages and prepare environment"
-	@echo "  lock        uses poetry to generate requirements.txt and poetry.lock files"
-	@echo "  format      formats the code"
-	@echo "  test        runs pytest on the suite of tests within tests/"
-	@echo "  precommit   runs lock, format, and tests together"
+	@echo "  check       Verify all required tools are installed"
+	@echo "  init        Initialize a new project using Poetry"
+	@echo "  install     Install packages and prepare environment"
+	@echo "  lock        Generate requirements.txt and poetry.lock"
+	@echo "  test        Run tests with pytest"
 	@echo ""
-	@echo "Check the Makefile to know exactly what each target is doing."
+	@echo "Check the Makefile for detailed implementation."
 
-# for checking that poetry exists
-.PHONY: curl_check
-curl_check:
-	@if [ -z $(CURL) ]; then echo "Curl could not be found."; exit 2; fi
-.PHONY: poetry_check
-poetry_check:
-	@if [ -z $(POETRY) ]; then echo "Poetry could not be found."; exit 2; fi
-.PHONY: ruff_check
+# Ensure required tools are available
+.PHONY: check
+check:
+	@echo "Checking for required tools..."
+	@if [ -z $(CURL) ]; then echo "Error: curl is not installed."; exit 2; fi
+	@if [ -z $(POETRY) ]; then echo "Error: Poetry is not installed."; exit 2; fi
+	@echo "All checks passed."
 
-# for initializing the project from scratch
+# Initialize the project
 .PHONY: init
-init: curl_check poetry_check
-	# create the project in this directory
+init: check
+	@echo "Initializing project with Poetry..."
 	$(POETRY) new $(DIRNAME)
-	# cleanup things
-	mv $(DIRNAME) temp
-	mv temp/* ./
-	rmdir temp
+	mv $(DIRNAME) temp_dir
+	mv temp_dir/* ./
+	rmdir temp_dir
 	rm -f README.rst
-	# make some default directories and files
-	mkdir src
-	@bash -c "echo -e 'if __name__ == \"__main__\":\n    pass' > src/main.py"
-	touch .env
-	# template readme
-	rm -f README.md
-	echo "# TODO" > README.md
-	# gitignore
-	$(CURL) https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
-	# perform a git init
+	mkdir -p src
+	echo 'if __name__ == "__main__":\n    pass' > src/main.py
+	touch .env README.md
+	echo "# Project: $(DIRNAME)" > README.md
+	$(CURL) -sSf https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -o .gitignore
 	git init -b main
-	# because poetry pins pytest version to obsolescence...
-	# we need to manual update
-	$(POETRY) add --group dev pytest
-	# run the install
+	mkdir -p .github/workflows
+	mv github_actions/* .github/workflows/
+	rmdir github_actions
+	$(POETRY) add --group dev pytest pre-commit
 	$(MAKE) install
-	# test precommit
-	$(MAKE) precommit
 
-# installs the package
+# Install dependencies
 .PHONY: install
-install: poetry_check
+install: check
+	@echo "Installing project dependencies..."
 	$(POETRY) install
+	. $$($(POETRY) env info --path)/bin/activate && pre-commit install
 
-# freezes things
+# Lock dependencies and generate requirements.txt
 .PHONY: lock
-lock: poetry_check
+lock: check
+	@echo "Locking dependencies..."
 	$(POETRY) lock
 	$(POETRY) export -f requirements.txt --output requirements.txt
 
-# linting, formatting, import sorting
-.PHONY: format
-format: poetry_check
-	@if [ -z $(RUFF) ]; then $(POETRY) run pip install --upgrade ruff; fi
-	@if [ -z $(ISORT) ]; then $(POETRY) run pip install --upgrade ISORT; fi
-	@echo ""
-	@echo "Checking code for linting errors..."
-	-$(POETRY) run ruff check .
-	@echo ""
-	@echo "Formatting code..."
-	-$(POETRY) run ruff format .
-	@echo ""
-	@echo "Sorting dependencies..."
-	-$(POETRY) run isort . --profile black
-
-# tests
+# Run tests
 .PHONY: test
-test: poetry_check
+test: check
+	@echo "Running tests..."
 	$(POETRY) run pytest tests -vvv
-
-# basic precommit
-.PHONY: precommit
-precommit: lock format test
